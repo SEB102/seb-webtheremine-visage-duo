@@ -551,6 +551,7 @@ async function createPlayer(n) {
   });
 }
 
+try { const _s = await navigator.mediaDevices.getUserMedia({ video: true }); _s.getTracks().forEach(t => t.stop()); } catch(_) {}
 await createPlayer('1');
 await createPlayer('2');
 
