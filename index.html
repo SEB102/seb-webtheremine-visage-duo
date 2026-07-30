@@ -294,7 +294,7 @@ async function createPlayer(n) {
 
   let audioCtx, osc, vibratoOsc, vibratoGain, filter, envGain, masterGain, reverbGain, panner;
   let pianoSampler, pianoReady = false, pianoLoading, pianoLastPitch = null;
-  let stringsSampler, stringsReady = false, stringsLoading, stringsLastPitch = null, stringsLastTrigger = -Infinity;
+  let stringsSampler, stringsGain, stringsReady = false, stringsLoading, stringsLastPitch = null, stringsLastTrigger = -Infinity;
 
   function initPiano() {
     if (pianoLoading) return pianoLoading;
@@ -328,6 +328,9 @@ async function createPlayer(n) {
     if (stringsLoading) return stringsLoading;
     if (!window.Tone) return Promise.reject(new Error('Tone.js indisponible'));
     window.Tone.setContext(audioCtx);
+    stringsGain = audioCtx.createGain();
+    stringsGain.gain.value = 0;
+    stringsGain.connect(masterGain);
     stringsLoading = new Promise((resolve, reject) => {
       stringsSampler = new window.Tone.Sampler({
         urls: {
@@ -352,7 +355,7 @@ async function createPlayer(n) {
           console.error('Chargement du String Ensemble impossible', error);
           reject(error);
         }
-      }).connect(masterGain);
+      }).connect(stringsGain);
     });
     return stringsLoading;
   }
@@ -514,6 +517,10 @@ async function createPlayer(n) {
       const freq=midiToFreq(notes[idx])*Math.pow(2,p.octaveShift);
       if (sonMode === 'piano') {
         envGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.01);
+        if (stringsGain) stringsGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.05);
+        if (stringsReady && stringsLastPitch !== null) stringsSampler.releaseAll();
+        stringsLastPitch = null;
+        stringsLastTrigger = -Infinity;
         if (pianoReady && freq !== pianoLastPitch) {
           pianoSampler.triggerAttackRelease(freq, 1.2, undefined, Math.max(0.15, vol));
           pianoLastPitch = freq;
@@ -524,10 +531,13 @@ async function createPlayer(n) {
       }
       if (sonMode === 'strings') {
         envGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.01);
+        if (pianoReady && pianoLastPitch !== null) pianoSampler.releaseAll();
+        pianoLastPitch = null;
+        stringsGain.gain.setTargetAtTime(Math.max(0, Math.min(1, vol)) * 0.85, audioCtx.currentTime, 0.12);
         const now = audioCtx.currentTime;
-        if (stringsReady && (freq !== stringsLastPitch || now - stringsLastTrigger > 2.6)) {
-          if (stringsLastPitch !== null) stringsSampler.releaseAll();
-          stringsSampler.triggerAttack(freq, undefined, Math.max(0.12, vol));
+        if (stringsReady && (freq !== stringsLastPitch || now - stringsLastTrigger > 2.9)) {
+          if (stringsLastPitch !== null && stringsLastPitch !== freq) stringsSampler.releaseAll();
+          stringsSampler.triggerAttack(freq, undefined, 0.8);
           stringsLastPitch = freq;
           stringsLastTrigger = now;
         }
@@ -535,6 +545,7 @@ async function createPlayer(n) {
         activeVol = vol;
         return;
       }
+      if (stringsGain) stringsGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.05);
       if (stringsReady && stringsLastPitch !== null) stringsSampler.releaseAll();
       stringsLastPitch = null;
       stringsLastTrigger = -Infinity;
@@ -556,6 +567,7 @@ async function createPlayer(n) {
         return;
       }
       if (sonMode === 'strings') {
+        if (stringsGain) stringsGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.15);
         if (stringsReady && stringsLastPitch !== null) stringsSampler.releaseAll();
         stringsLastPitch = null;
         stringsLastTrigger = -Infinity;
