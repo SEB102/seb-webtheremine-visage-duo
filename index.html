@@ -130,7 +130,7 @@
           </select>
         </label>
         <label title="Délai avant qu'une note sorte quand rien ne sonne. Court = attaque franche."><span>Départ</span><input id="rng-attaque-1" type="range" min="0" max="150" step="10" value="60"><span id="lbl-attaque-1">60 ms</span></label>
-        <label title="Délai avant de quitter la note en cours pour une autre. C'est lui qui supprime les notes de passage."><span>Latence</span><input id="rng-latence-1" type="range" min="200" max="400" step="10" value="300"><span id="lbl-latence-1">300 ms</span></label>
+        <label title="Délai avant de quitter la note en cours pour une autre. C'est lui qui supprime les notes de passage."><span>Latence</span><input id="rng-latence-1" type="range" min="0" max="300" step="10" value="200"><span id="lbl-latence-1">200 ms</span></label>
         <div id="note-big-1" class="note-big">—</div>
         <button id="btn-edit-1" style="margin-left:auto">NOTES ▾</button>
         <button id="btn-fs-1" title="Plein écran">⛶</button>
@@ -183,7 +183,7 @@
           </select>
         </label>
         <label title="Délai avant qu'une note sorte quand rien ne sonne. Court = attaque franche."><span>Départ</span><input id="rng-attaque-2" type="range" min="0" max="150" step="10" value="60"><span id="lbl-attaque-2">60 ms</span></label>
-        <label title="Délai avant de quitter la note en cours pour une autre. C'est lui qui supprime les notes de passage."><span>Latence</span><input id="rng-latence-2" type="range" min="200" max="400" step="10" value="300"><span id="lbl-latence-2">300 ms</span></label>
+        <label title="Délai avant de quitter la note en cours pour une autre. C'est lui qui supprime les notes de passage."><span>Latence</span><input id="rng-latence-2" type="range" min="0" max="300" step="10" value="200"><span id="lbl-latence-2">200 ms</span></label>
         <div id="note-big-2" class="note-big">—</div>
         <button id="btn-edit-2" style="margin-left:auto">NOTES ▾</button>
         <button id="btn-fs-2" title="Plein écran">⛶</button>
@@ -307,7 +307,7 @@ async function createPlayer(n) {
 const SEUIL_AUDIBLE = 0.02;   // en dessous, playNote() ne sort aucun son
 const OUBLI_MS = 250;         // sans appel pendant ce temps, on repart à zéro
 let attaqueMs    = 60;        // curseur « Départ »  (0–150 ms)
-let latenceMs    = 300;       // curseur « Latence » (200–400 ms)
+let latenceMs    = 200;       // curseur « Latence » (0–300 ms)
 let pendingIdx   = -1;        // zone survolée, en attente de confirmation
 let pendingSince = 0;         // horodatage d'entrée dans cette zone
 let committedIdx = -1;        // zone réellement jouée
