@@ -711,7 +711,7 @@ function resolveIdx(rawIdx, now, vol) {
       if (active){ctx2d.fillStyle='rgba(0,232,122,0.25)';ctx2d.fillRect(x,H-activeVol*H,zW-1,activeVol*H);}
       ctx2d.strokeStyle=active?'#00e87a':'#252530'; ctx2d.lineWidth=active?2:1;
       ctx2d.beginPath(); ctx2d.moveTo(x,0); ctx2d.lineTo(x,H); ctx2d.stroke();
-      ctx2d.fillStyle=active?'#00e87a':'#2e2e44';
+      ctx2d.fillStyle=active?'#00e87a':(showVideo?'#2e2e44':'#8a8ab8');
       const fsz=Math.round(10*fscale);
       ctx2d.font=active?`bold ${fsz+1}px monospace`:`${fsz}px monospace`;
       ctx2d.textAlign='center'; ctx2d.fillText(midiToName(notes[i]),x+zW/2,fsz+4);
