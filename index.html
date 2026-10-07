@@ -268,7 +268,7 @@ const { FaceLandmarker, FilesetResolver } = vision;
 const filesetResolver = await FilesetResolver.forVisionTasks(
   'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.35/wasm'
 );
-document.getElementById('status').textContent = 'Sébastien Gay - juin 2026 · Licence MIT · MediaPipe (Apache 2.0)';
+document.getElementById('status').innerHTML = 'Sébastien Gay - juin 2026 · Licence MIT · MediaPipe (Apache 2.0)<br>Piano : Salamander Grand Piano, Alexander Holm (CC BY 3.0) · Cordes : FluidR3 GM String Ensemble, Frank Wen &amp; Toby Smithe (CC BY 3.0)';
 
 // ── FACTORY JOUEUR ────────────────────────────────────────────────────────────
 async function createPlayer(n) {
